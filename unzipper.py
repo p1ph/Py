@@ -1,3 +1,7 @@
+import zipfile
+import optparse
+import threading
+
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -10,28 +14,18 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-print color.BOLD + 'Hello World !' + color.END
 
-
-import zipfile
-import optparse
-import threading
-
-
-def extractfile(zipfile, password):
+def extractfile(zFile, password):
     try:
-        zipfile.extractall(pwd=password)
+        zFile.extractall(pwd=password)
         return True
     except:
         return False
 
-def threading(extractfile):
-    for line in passFile.readlines():
-        s =  Thread(target = extractfile, args=(zipfile, password))
-        s.start()
 
 def main():
     result = None
+    
     parser = optparse.OptionParser("usage %prog "+\
                                    "-f <zipfile> -d <dictionary>")
     parser.add_option('-f', dest='zname', type='string',\
@@ -46,23 +40,23 @@ def main():
         zname = options.zname
         dname = options.dname
         
-    zipfile=zipfile.ZipFile(zname)
+    zFile=zipfile.ZipFile(zname)
     passFile = open(dname)
+
+    def threading(extractfile):
+        for line in passFile.readlines():
+            s =  Thread(target = extractfile, args=(zipfile, password))
+            s.start()
 
     for line in passFile.readlines():
         threading(extractfile)
         password = line.strip('\n')
-        success = extractFile(zipfile, password)
+        success = extractfile(zFile, password)
         if success is True:
-            print ("\n" + "[+] Password found: " + "\n")
+            print ("\n" + color.BOLD + "[+] Password found: " + password + color.END + "\n")
             break
         else:
-            print ("\n" + "[-] No Password Found" "\n")
+            print (color.BOLD + "[-]" + color.END + "Password Not Found")
 
 if __name__ == "__main__":
     main()
-    
-
-
-    
-
